@@ -1,67 +1,81 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Estudiante;
 use Illuminate\Http\Request;
-use Psy\Command\EditCommand;
 
 class estudianteController extends Controller
 {
+    /**
+     * Muestra la lista de estudiantes con paginación.
+     */
     public function index()
-
-    {  
+    {
         $estudiantes = Estudiante::paginate();
         return view('estudiantes.index', compact('estudiantes'));
-
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo estudiante.
+     */
     public function create()
-
     {
         $estudiante = new Estudiante();
-
         return view('estudiantes.create', compact('estudiante'));
     }
 
-
-    public function store (Request $request)
-
+    /**
+     * Almacena un nuevo estudiante en la base de datos.
+     */
+    public function store(Request $request)
     {
-        
-        request()->validate(Estudiante::$rules); 
+        // Validar la solicitud
+        $request->validate(Estudiante::$rules);
 
-
+        // Crear el estudiante
         $estudiante = Estudiante::create($request->all());
-        $estudiante->numero_id = (int) $request->input('numero_id'); // Convertir a entero
-
-        
+        $estudiante->numero_id = (int) $request->input('numero_id'); // Asegurar tipo entero
+        $estudiante->save();
 
         return redirect()->route('estudiantes.index')
-            ->with('success', 'Estudiante insertado correctamente');
+            ->with('success', 'Estudiante insertado correctamente.');
     }
+
+    /**
+     * Muestra el formulario para editar un estudiante existente.
+     */
     public function edit($id)
     {
-        $estudiante = Estudiante::find($id);
-        return view('estudiantes.edit',compact('estudiante'));
+        $estudiante = Estudiante::findOrFail($id); // findOrFail para manejar errores si no existe
+        return view('estudiantes.edit', compact('estudiante'));
     }
 
+    /**
+     * Actualiza un estudiante en la base de datos.
+     */
     public function update(Request $request, Estudiante $estudiante)
     {
-        request()->validate(Estudiante::$rules);
+        // Validar la solicitud
+        $request->validate(Estudiante::$rules);
+
+        // Actualizar el estudiante
         $estudiante->update($request->all());
 
-        return redirect()->route('estdiantes.index')
-        ->with('success', 'estudiante actualizao correctamente');
-    }
-    
-    public function destroy($id){
-            $estudiantes = Estudiante::find($id)->delete();
-
-
-            return redirect()->route('estudiantes.index')
-            ->with('success', 'Estudiante expulsado correctamente');
+        return redirect()->route('estudiantes.index')
+            ->with('success', 'Estudiante actualizado correctamente.');
     }
 
-    
+    /**
+     * Elimina un estudiante de la base de datos.
+     */
+    public function destroy($id)
+    {
+        // Buscar y eliminar el estudiante
+        $estudiante = Estudiante::findOrFail($id);
+        $estudiante->delete();
 
+        return redirect()->route('estudiantes.index')
+            ->with('success', 'Estudiante eliminado correctamente.');
+    }
 }

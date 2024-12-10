@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insertar Información</title>
     <style>
         body {
@@ -16,23 +17,37 @@
             text-align: center;
         }
         form {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 10px;
             width: 50%;
             margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        label, input, button {
+        label {
             display: block;
-            width: 90%;
-            margin: 10px auto;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, button {
+            width: calc(100% - 20px);
+            margin: 5px auto;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input.is-invalid {
+            border-color: red;
+        }
+        .invalid-feedback {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
         }
         button {
             background-color: #4CAF50;
             color: white;
-            padding: 10px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
@@ -42,96 +57,81 @@
 </head>
 <body>
     <h2>Formulario para Insertar Información de los Estudiantes</h2>
-    <form action="{{route('estudiantes.store')}}" method="post">
+    <form action="{{ route('estudiantes.store') }}" method="post">
         @csrf
-        <label for="nombre">Nombre:</labelfor>
-        <input type="text" id="nombre" name="nombre" value="{{ $estudiante->nombre }}" class="form-control{{ $errors->has('nombre') ? ' is-invalid' : '' }}" placeholder="Nombre">        
-        @if ($errors->has('nombre'))
-        <div class="invalid->feedback">
-        {{ $errors->first('nombre')}}
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $estudiante->nombre ?? '') }}" class="form-control{{ $errors->has('nombre') ? ' is-invalid' : '' }}" placeholder="Nombre">
+        @error('nombre')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-
-        <labelfor for="apellido">Apellido:</labelfor>
-        <input type="text" id="apellido" name="apellido" value="{{$estudiante->apellido}}" class="form-control{{ $errors->has('apellido') ? ' is-invalid' : '' }}" placeholder="apellido">
-        @if ($errors->has('apellido'))
-        <div class="invalid->feedback">
-        {{ $errors->first('apellido')}}
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" value="{{ old('apellido', $estudiante->apellido ?? '') }}" class="form-control{{ $errors->has('apellido') ? ' is-invalid' : '' }}" placeholder="Apellido">
+        @error('apellido')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
-
+        @enderror
 
         <label for="edad">Edad:</label>
-        <input type="number" id="edad" name="edad" value="{{$estudiante->edad}}" class="form-control{{ $errors->has('edad') ? ' is-invalid' : '' }}" placeholder="edad">
-        @if ($errors->has('edad'))
-        <div class="invalid->feedback">
-        {{ $errors->first('edad')}}
+        <input type="number" id="edad" name="edad" value="{{ old('edad', $estudiante->edad ?? '') }}" class="form-control{{ $errors->has('edad') ? ' is-invalid' : '' }}" placeholder="Edad">
+        @error('edad')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-
-        
         <label for="tipo_sangre">Tipo de sangre:</label>
-        <input type="text" id="tipo_Sangre" name="tipo_sangre"value="{{$estudiante->tipo_sangre}}" class="form-control{{ $errors->has('edad') ? ' is-invalid' : '' }}" placeholder="tipo_sangre">
-        @if ($errors->has('tipo_sangre'))
-        <div class="invalid->feedback">
-        {{ $errors->first('tipo_sangre')}}
+        <input type="text" id="tipo_sangre" name="tipo_sangre" value="{{ old('tipo_sangre', $estudiante->tipo_sangre ?? '') }}" class="form-control{{ $errors->has('tipo_sangre') ? ' is-invalid' : '' }}" placeholder="Tipo de sangre">
+        @error('tipo_sangre')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-
-        
-        <label for="numero_id">Numero de documento:</label>
-        <input type="number" id="numero_id" name="numero_id" value="{{$estudiante->numero_id}}" class="form-control{{ $errors->has('numero_id') ? ' is-invalid' : '' }}" placeholder="numero_id">
-        @if ($errors->has('numero_id'))
-        <div class="invalid->feedback">
-        {{ $errors->first('numero_id')}}
+        <label for="numero_id">Número de documento:</label>
+        <input type="number" id="numero_id" name="numero_id" value="{{ old('numero_id', $estudiante->numero_id ?? '') }}" class="form-control{{ $errors->has('numero_id') ? ' is-invalid' : '' }}" placeholder="Número de documento">
+        @error('numero_id')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-
-      
-        <label for="tipo_id">Tipo de id:</label>
-        <input type="text" id="tipo_id"  name="tipo_id" value="{{$estudiante->tipo_id}}" class="form-control{{ $errors->has('tipo_id') ? ' is-invalid' : '' }}" placeholder="tipo_id">
-        @if ($errors->has('tipo_id'))
-        <div class="invalid->feedback">
-        {{ $errors->first('tipo_id')}}
+        <label for="tipo_id">Tipo de ID:</label>
+        <input type="text" id="tipo_id" name="tipo_id" value="{{ old('tipo_id', $estudiante->tipo_id ?? '') }}" class="form-control{{ $errors->has('tipo_id') ? ' is-invalid' : '' }}" placeholder="Tipo de ID">
+        @error('tipo_id')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-
-        
         <label for="fecha_nacimiento">Fecha de nacimiento:</label>
-        <input type="date" id="fecha de nacimiento" name="fecha_nacimiento" value="{{$estudiante->fecha_nacimiento}}" class="form-control{{ $errors->has('fecha_nacimiento') ? ' is-invalid' : '' }}" placeholder="fecha_nacimiento">
-        @if ($errors->has('fecha_nacimiento'))
-        <div class="invalid->feedback">
-        {{ $errors->first('fecha_nacimiento')}}
+        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ old('fecha_nacimiento', $estudiante->fecha_nacimiento ?? '') }}" class="form-control{{ $errors->has('fecha_nacimiento') ? ' is-invalid' : '' }}">
+        @error('fecha_nacimiento')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-
-        
         <label for="semestre">Semestre:</label>
-        <input type="number" id="semestre" name="semestre" value="{{$estudiante->semestre}}"  class="form-control{{ $errors->has('semestre') ? ' is-invalid' : '' }}" placeholder="semestre">
-        @if ($errors->has('semestre'))
-        <div class="invalid->feedback">
-        {{ $errors->first('semestre')}}
+        <input type="number" id="semestre" name="semestre" value="{{ old('semestre', $estudiante->semestre ?? '') }}" class="form-control{{ $errors->has('semestre') ? ' is-invalid' : '' }}" placeholder="Semestre">
+        @error('semestre')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
-        
         <label for="programa">Programa:</label>
-        <input type="text" id="programa" name="programa"value="{{$estudiante->programa}}" class="form-control{{ $errors->has('programa') ? ' is-invalid' : '' }}" placeholder="programa">
-        @if ($errors->has('programa'))
-        <div class="invalid->feedback">
-        {{ $errors->first('programa')}}
+        <input type="text" id="programa" name="programa" value="{{ old('programa', $estudiante->programa ?? '') }}" class="form-control{{ $errors->has('programa') ? ' is-invalid' : '' }}" placeholder="Programa">
+        @error('programa')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
-        @endif
+        @enderror
 
         <button type="submit">Insertar Estudiante</button>
     </form>
-
-
 </body>
 </html>

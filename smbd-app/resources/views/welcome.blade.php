@@ -58,8 +58,8 @@
         <a class="button" href="{{route( 'estudiantes.index')}}">Consultar estudiantes</a>
         <a class="button" href="{{route('profesores.create')}}">Agregar profesores</a>
         <a class="button" href="{{route('profesores.index')}}">Consultar profesores</a>
-        <a class="button" href="">Agregar Nomina</a>
-        <a class="button" href="">Consultar Nomina</a>
+        <a class="button" href="{{route('nominas.create')}}">Agregar nominas</a>
+        <a class="button" href="{{route('nominas.index')}}">Consultar nominas</a>
     </div>
 </body>
 </html>

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Nomina;
 use App\Models\Profesor;
+use Illuminate\Http\Request;
 
-class profesoresController extends Controller
+class ProfesoresController extends Controller
 {
     /**
      * Muestra la lista de profesores con paginación.
      */
     public function index()
-    {  
-        $profesores = Profesor::paginate(10); // Ajuste del número de elementos por página
+    {
+        $profesores = Profesor::with('nomina')->paginate(10); // Traer todos los profesores con la relación de nómina y paginación
         return view('profesores.index', compact('profesores'));
     }
 
@@ -20,37 +21,51 @@ class profesoresController extends Controller
      * Muestra el formulario para crear un nuevo profesor.
      */
     public function create()
-    {
-        $profesor = new Profesor(); // Usamos singular, ya que estamos creando uno
-        return view('profesores.create', compact('profesor'));
-    }
+{
+    // Aquí obtienes la relación correctamente, pero asegúrate de que los datos estén bien estructurados
+    $profesores = Profesor::with(['salarioMensual', 'tipoVinculacion'])->get();  // Colección de profesores
+    $nominas = Nomina::pluck('tipo_vinculacion', 'id');
+    $salarios = Nomina::pluck('salario', 'id');  // Asegúrate de usar un nombre diferente para cada variable si obtienes más de una relación
+
+    return view('profesores.create', compact('profesores', 'nominas', 'salarios'));  // Pasa las variables correctas a la vista
+}
 
     /**
      * Almacena un nuevo profesor en la base de datos.
      */
     public function store(Request $request)
-    {
-        $request->validate(Profesor::$rules); // Validación explícita
+{
+    // Valida que los valores de tipo_vinculacion_id y salario_mensual_id existen en la tabla nomina
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'apellido' => 'required|string|max:255',
+        'edad' => 'required|integer',
+        'tipo_sangre' => 'required|string|max:10',
+        'numero_id' => 'required|numeric|unique:profesores,numero_id',
+        'tipo_id' => 'required|string|max:10',
+        'fecha_nacimiento' => 'required|date',
+        'programa' => 'required|string|max:255',
+        'tipo_vinculacion_id' => 'required|exists:nomina,id', // Verifica que tipo_vinculacion_id exista en nomina
+        'salario_mensual_id' => 'required|exists:nomina,id', // Verifica que salario_mensual_id exista en nomina
+    ]);
 
-        Profesor::create($request->all());
+    // Crea el nuevo profesor con los datos validados
+    Profesor::create($validated);
 
-        return redirect()->route('profesores.index')
-            ->with('success', 'Profesor insertado correctamente');
-    }
+    return redirect()->route('profesores.index')->with('success', 'Profesor creado satisfactoriamente.');
+}
+
 
     /**
      * Muestra el formulario para editar un profesor existente.
      */
     public function edit($id)
     {
-        $profesor = Profesor::find($id);
+        // Obtén el profesor específico y sus relaciones
+    $profesor = Profesor::with(['salarioMensual', 'tipoVinculacion'])->findOrFail($id); // Encuentra el profesor por ID
 
-        // Verificación de existencia
-        if (!$profesor) {
-            abort(404, 'Profesor no encontrado');
-        }
+    return view('profesores.edit', compact('profesor')); // Pasa el profesor a la vista
 
-        return view('profesores.edit', compact('profesor'));
     }
 
     /**
@@ -58,9 +73,10 @@ class profesoresController extends Controller
      */
     public function update(Request $request, $id)
 {
+    // Encuentra al profesor
     $profesor = Profesor::findOrFail($id);
 
-    // Validación de los campos
+    // Validación de los datos
     $validated = $request->validate([
         'nombre' => 'required|string|max:255',
         'apellido' => 'required|string|max:255',
@@ -70,31 +86,28 @@ class profesoresController extends Controller
         'tipo_id' => 'required|string|max:10',
         'fecha_nacimiento' => 'required|date',
         'programa' => 'required|string|max:255',
+        'tipo_vinculacion_id' => 'required|exists:nomina,id',  // Validar que tipo_vinculacion_id exista en la tabla nomina
+        'salario_mensual_id' => 'required|exists:nomina,id', // Validar que salario_mensual_id exista en la tabla nomina
     ]);
 
-    // Actualización del profesor
+    // Actualización de los datos del profesor
     $profesor->update($validated);
 
     return redirect()->route('profesores.index')->with('success', 'Profesor actualizado correctamente.');
 }
-
 
     /**
      * Elimina un profesor de la base de datos.
      */
     public function destroy($id)
     {
-        $profesor = Profesor::find($id);
-
         // Verificación de existencia antes de eliminar
-        if (!$profesor) {
-            abort(404, 'Profesor no encontrado');
-        }
+        $profesor = Profesor::findOrFail($id);
 
+        // Eliminar el registro del profesor
         $profesor->delete();
 
         return redirect()->route('profesores.index')
             ->with('success', 'Profesor eliminado correctamente');
     }
 }
-

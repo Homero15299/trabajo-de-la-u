@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Información de Profesores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background-image: url('https://i.pinimg.com/736x/05/14/37/051437cf7aaacbb580cf6fc5494816a4.jpg');
@@ -26,6 +27,7 @@
             overflow: hidden;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
         }
         th, td {
             padding: 12px;
@@ -65,13 +67,18 @@
         .btn-danger:hover {
             background-color: #c0392b;
         }
+        /* Agregar un poco de margen y darle espacio al formulario */
+        form {
+            margin: 20px auto;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <h1>Vista de Profesores</h1>
     <h2>Consultar Información</h2>
     <h3>Sen Seis</h3>
-    
+
     <table>
         <thead>
             <tr>
@@ -83,11 +90,13 @@
                 <th>Número de Documento</th>
                 <th>Fecha de Nacimiento</th>
                 <th>Tipo de Sangre</th>
+                <th>Tipo de Vinculacion</th>
+                <th>Salario Mensual</th>
                 <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($profesores as $profesor)
+            @foreach($profesores as $profesor)
             <tr>
                 <td>{{ $profesor->nombre }}</td>
                 <td>{{ $profesor->apellido }}</td>
@@ -97,6 +106,8 @@
                 <td>{{ $profesor->numero_id }}</td>
                 <td>{{ $profesor->fecha_nacimiento }}</td>
                 <td>{{ $profesor->tipo_sangre }}</td>
+                <td>{{ $profesor->tipoVinculacion->tipo_vinculacion }}</td>
+                <td>$ {{ $profesor->salarioMensual->salario}}</td>
                 <td>
                     <!-- Enlace para editar el profesor -->
                     <a class="button" href="{{ route('profesores.edit', $profesor->id) }}">
@@ -117,4 +128,3 @@
     </table>
 </body>
 </html>
-

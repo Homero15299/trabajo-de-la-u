@@ -26,12 +26,12 @@
         label {
             font-weight: bold;
         }
-        label, input, button {
+        label, input, select, button {
             display: block;
             width: 90%;
             margin: 10px auto;
         }
-        input {
+        input, select {
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -108,8 +108,37 @@
             <div class="invalid-feedback">{{ $errors->first('programa') }}</div>
         @endif
 
+        <label for="tipo_vinculacion_id">Tipo Contrato:</label>
+        <select id="tipo_vinculacion_id" name="tipo_vinculacion_id" class="form-control{{ $errors->has('tipo_vinculacion_id') ? ' is-invalid' : '' }}">
+            <option value="" selected>Seleccione un tipo de vinculación</option>
+            @foreach ($profesores as $profesor)
+                <option value="{{ $profesor->id }}">
+                    {{ $profesor->tipoVinculacion->tipo_vinculacion}}
+                </option>
+            @endforeach
+        </select>
+        @if ($errors->has('tipo_vinculacion_id'))
+            <div class="invalid-feedback">{{ $errors->first('tipo_vinculacion_id') }}</div>
+        @endif
+
+        <!-- Campo Salario Mensual -->
+        <label for="salario_mensual_id">Salario Mensual</label>
+        <select id="salario_mensual_id" name="salario_mensual_id" class="form-control{{ $errors->has('salario_mensual_id') ? ' is-invalid' : '' }}">
+            <option value="" selected>Seleccione un salario mensual</option>
+            @foreach($profesores as $profesor)
+                <option value="{{ $profesor->id }}">
+                    ${{ $profesor->salarioMensual->salario }}
+                </option>
+            @endforeach
+        </select>
+        @if ($errors->has('salario_mensual_id'))
+            <div class="invalid-feedback">{{ $errors->first('salario_mensual_id') }}</div>
+        @endif
+
+        <!-- Botón -->
         <button type="submit">Insertar Profesor</button>
     </form>
 </body>
 </html>
+
 
